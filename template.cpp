@@ -270,6 +270,35 @@ class DSU{
         if(val2>n) val--;
         n-=((int)1<<(int)val);          */
 
+
+//-----------------------SPARSE TABLE------------------------
+const int MAX_N = 100005;
+const int LOG = 17;
+int a[100005];
+int m[100005][17]; // m[MAX_N][LOG] -> m[i][j] is the minimum among a[i....i+2^(j-1)]
+int bin_log[100005];
+
+int query(int l, int r){
+    int length = r - l + 1;
+    int k = bin_log[length];
+    return min(m[l][k], m[r-(1<<k)][k]);
+}
+void sparse(int n, vector<int> &a){
+    bin_log[1] = 0;
+    for(int i = 2; i <= n; i++){
+        bin_log[i] = bin_log[i/2] + 1;
+    }
+
+    for(int i = 0; i < n; i++){
+        m[i][0] = a[i];
+    }
+
+    for(int k = 1; k < LOG; k++){
+        for(int i = 0; i +(1<<k) - 1 <= n; i++){
+            m[i][k] = min(m[i][k-1], m[i+(1<<(k-1))][k-1]);
+        }
+    }
+}
 //-------------  CODE STARTS  -------------------
 
 void Yowaimo(){
